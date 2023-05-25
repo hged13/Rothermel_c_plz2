@@ -21,6 +21,8 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Default")
 		TObjectPtr<UStaticMeshComponent> Sphere;
 
+	UPROPERTY(EditAnywhere, Category = "Materialr")
+		UMaterialInterface* MyMaterial;
 
 	UPROPERTY(EditAnywhere)
 		UStaticMesh* MyMesh;
@@ -29,19 +31,16 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Default")
 		TObjectPtr<USceneComponent> DefaultSceneRoot;
 
-	UPROPERTY(EditAnywhere, Category = "Materialr")
-		UMaterialInterface* MyMaterial;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Niagara")
 		UNiagaraSystem* NiagaraSystemAsset;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadONly, Category = "Niagara")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Niagara")
 		UNiagaraComponent* NiagaraComponent;
 
 
-	UFUNCTION(BlueprintCallable,Category="MyActor")
+	UFUNCTION(BlueprintCallable, Category = "MyActor")
 		UNiagaraComponent* GetNiagaraComponent() const { return NiagaraComponent; }
-		
+
 
 
 	// Sets default values for this actor's properties
@@ -58,4 +57,3 @@ public:
 
 
 };
-

@@ -23,7 +23,7 @@ AGridManager::AGridManager()
 void AGridManager::BeginPlay()
 {
 	Super::BeginPlay();
-	InitializeGrid(100, 1000);
+	InitializeGrid(10, 2000);
 	isSpreading = false;
 
 
