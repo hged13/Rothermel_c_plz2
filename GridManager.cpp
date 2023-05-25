@@ -23,21 +23,28 @@ AGridManager::AGridManager()
 void AGridManager::BeginPlay()
 {
 	Super::BeginPlay();
-	InitializeGrid(20, 1000);
-	
+	InitializeGrid(10, 1000);
+	isSpreading = false;
 
 
 	
-
-			
 }
+
+
 
 
 // Called every frame
 void AGridManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	arrayindex = MakeFire(GridCellArray, arrayindex);
+	if (isSpreading == false) {
+		Delay = 10.0f;
+
+		GetWorld()->GetTimerManager().SetTimer(Timer, this, &AGridManager::TimerCallback, Delay, false);
+
+	}
+	isSpreading = true;
+	
 
 	
 	
@@ -91,56 +98,51 @@ void AGridManager::InitializeGrid(int32 GridSize, int32 WorldGridSize)
 }
 	
 
-void AGridManager::StartTimer(){
-	Delay = 1.0;
-	GetWorld()->GetTimerManager().SetTimer(Timer, this, &AGridManager::TimerCallback, Delay, false);
 
 
-}
 
 
-void AGridManager::StopTimer()
-{
-	// Stop the timer
-	GetWorld()->GetTimerManager().ClearTimer(Timer);
-}
 
 void AGridManager::TimerCallback()
 {
-	// Spread fire through the grid here
-
-	// Call StartTimer again to continue the loop
-	StartTimer();
+	SpreadFire();
 }
+
+void AGridManager::TimerCallbackSpread()
+{
+	MakeFire(GridCellArray);
+}
+
+void AGridManager::endSpread() {
+	GetWorld()->GetTimerManager().ClearTimer(spreadTimer);
+	
+}
+
+
 
 
 
 void AGridManager::SpreadFire() {
-	int gc_arr_size = sizeof(GridCellArray) / sizeof(GridCellArray[0]);
-	int counter = 0;
-	while (counter < gc_arr_size) {
-		arrayindex = MakeFire(GridCellArray, arrayindex);
-		counter = counter++;
-	}
+	
+GetWorld()->GetTimerManager().SetTimer(spreadTimer, this, &AGridManager::TimerCallbackSpread, 1.0f, true);
 }
 
 
-int32 AGridManager::MakeFire(TArray<AGridCell*> gridcellarray2, int32 ind) {
 
+void AGridManager::MakeFire(TArray<AGridCell*> gridcellarray2) {
 	int gc_arr_size = sizeof(gridcellarray2) / sizeof(gridcellarray2);
 
-
-
-	if (ind<gc_arr_size) {
-		UNiagaraComponent* NiagaraComponent = gridcellarray2[ind]->GetNiagaraComponent();
-		if(NiagaraComponent){
-			NiagaraComponent->Activate();
-			NiagaraComponent->SetPaused(false);
-			}
-
-
+	UNiagaraComponent* NiagaraComponent = gridcellarray2[arrayindex]->GetNiagaraComponent();
+	if(NiagaraComponent){
+		NiagaraComponent->Activate();
+		NiagaraComponent->SetPaused(false);
 		}
-	ind = ind++;
-	return ind;
+	arrayindex = arrayindex++;
+	if (arrayindex > gc_arr_size) {
+		endSpread();
+	}
+
+
+	
 }
 

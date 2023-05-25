@@ -33,6 +33,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -42,29 +43,35 @@ public:
 	UPROPERTY(EditAnywhere)
 		int32 arrayindex;
 
+
+	UPROPERTY(EditAnywhere)
+		bool isSpreading;
+
 	UFUNCTION(BlueprintCallable, Category = "MyCategory")
 		void InitializeGrid(int32 GridSize, int32 WorldGridSize);
 
 	UFUNCTION(BlueprintCallable,Category = "MyCategory")
-		int32 MakeFire(TArray<AGridCell*> GridCellArray2, int32 ind);
+		void MakeFire(TArray<AGridCell*> GridCellArray2);
 
 	UFUNCTION(BlueprintCallable, Category = "MyCategory")
 		void SpreadFire();
-
-	FTimerHandle Timer;
 
 
 	UPROPERTY(EditAnywhere)
 		float Delay;
 
-	UFUNCTION(BlueprintCallable, Category = "MyCategory")
-		void StartTimer();
-
-	UFUNCTION(BlueprintCallable, Category = "MyCategory")
-		void StopTimer();
 
 	UFUNCTION(BlueprintCallable, Category = "MyCategory")
 		void TimerCallback();
+
+	UFUNCTION(BlueprintCallable, Category = "MyCategory")
+		void TimerCallbackSpread();
+
+protected:
+	FTimerHandle Timer;
+
+	FTimerHandle spreadTimer;
+	void endSpread();
 
 
 };

@@ -31,10 +31,11 @@ AGridCell::AGridCell()
 		NiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NiagaraComponent"));
 		NiagaraComponent->SetupAttachment(RootComponent);
 		NiagaraComponent->Deactivate();
-		auto NiagaraSystemAssetPtr = LoadObject<UNiagaraSystem>(nullptr, TEXT("/Game/fiire.fiire"));
+		auto NiagaraSystemAssetPtr = LoadObject<UNiagaraSystem>(nullptr, TEXT("/Game/Fire.Fire"));
 		if (NiagaraSystemAssetPtr)
 		{
 			NiagaraComponent->SetAsset(NiagaraSystemAssetPtr);
+
 		}
 
 
