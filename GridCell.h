@@ -21,8 +21,6 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Default")
 		TObjectPtr<UStaticMeshComponent> Sphere;
 
-	UPROPERTY(EditAnywhere, Category = "Materialr")
-		UMaterialInterface* MyMaterial;
 
 	UPROPERTY(EditAnywhere)
 		UStaticMesh* MyMesh;
@@ -30,6 +28,9 @@ public:
 	/** Please add a variable description */
 	UPROPERTY(EditAnywhere, Category = "Default")
 		TObjectPtr<USceneComponent> DefaultSceneRoot;
+
+	UPROPERTY(EditAnywhere, Category = "Materialr")
+		UMaterialInterface* MyMaterial;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Niagara")
 		UNiagaraSystem* NiagaraSystemAsset;

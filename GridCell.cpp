@@ -8,16 +8,20 @@ AGridCell::AGridCell()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> MaterialAsset(TEXT("/Game/StarterContent/Particles/Materials/M_explosion_subUV"));
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Game/StarterContent/Shapes/Shape_Sphere"));
 
 
 	// Check if the material was loaded successfully
-	if (MeshAsset.Succeeded())
+	if (MaterialAsset.Succeeded())
 	{
+		MyMaterial = MaterialAsset.Object;
 		Sphere = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Sphere"));
 		Sphere = Sphere.Get();
 		if (Sphere != nullptr) {
 			MyMesh = MeshAsset.Object;
+
+			MyMesh->SetMaterial(0, MyMaterial);
 
 			Sphere->SetStaticMesh(MyMesh);
 
@@ -30,7 +34,7 @@ AGridCell::AGridCell()
 
 			// Set the scale of the mesh component to match the grid cell size
 			FVector NewScale = FVector(GridCellSize, GridCellSize, GridCellSize);
-			Sphere->SetRelativeScale3D(NewScale);
+			//Sphere->SetRelativeScale3D(NewScale);
 		}
 
 		// Attach the static mesh component to the root component of the actor

@@ -55,16 +55,13 @@ public:
 	UFUNCTION(BlueprintCallable,Category = "MyCategory")
 		void MakeFire(TArray<AGridCell*> GridCellArray2);
 
-	UFUNCTION(BlueprintCallable, Category = "MyCategory")
-		void SpreadFire();
+
 
 
 	UPROPERTY(EditAnywhere)
 		float Delay;
 
 
-	UFUNCTION(BlueprintCallable, Category = "MyCategory")
-		void TimerCallback();
 
 	UFUNCTION(BlueprintCallable, Category = "MyCategory")
 		void TimerCallbackSpread();

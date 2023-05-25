@@ -23,7 +23,7 @@ AGridManager::AGridManager()
 void AGridManager::BeginPlay()
 {
 	Super::BeginPlay();
-	InitializeGrid(10, 1000);
+	InitializeGrid(100, 1000);
 	isSpreading = false;
 
 
@@ -122,15 +122,14 @@ void AGridManager::endSpread() {
 
 void AGridManager::MakeFire(TArray<AGridCell*> gridcellarray2) {
 
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("THis function has been called!"));
-
 
 
 	int gc_arr_size = gridcellarray2.Num();
 
 	FString SizeString = FString::FromInt(gc_arr_size);
+    GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, SizeString);
 
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, SizeString);
+	
 
 	UNiagaraComponent* NiagaraComponent = gridcellarray2[arrayindex]->GetNiagaraComponent();
 	if(NiagaraComponent){
@@ -146,3 +145,8 @@ void AGridManager::MakeFire(TArray<AGridCell*> gridcellarray2) {
 	
 }
 
+
+
+// Debug Logging function below:
+//FString SizeString = FString::FromInt(gc_arr_size);
+//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, SizeString);
