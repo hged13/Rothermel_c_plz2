@@ -38,9 +38,10 @@ void AGridManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	if (isSpreading == false) {
-		Delay = 10.0f;
 
-		GetWorld()->GetTimerManager().SetTimer(Timer, this, &AGridManager::TimerCallback, Delay, false);
+		GetWorld()->GetTimerManager().SetTimer(spreadTimer, this, &AGridManager::TimerCallbackSpread, 1.0f, true);
+
+		
 
 	}
 	isSpreading = true;
@@ -103,10 +104,7 @@ void AGridManager::InitializeGrid(int32 GridSize, int32 WorldGridSize)
 
 
 
-void AGridManager::TimerCallback()
-{
-	SpreadFire();
-}
+
 
 void AGridManager::TimerCallbackSpread()
 {
@@ -122,22 +120,24 @@ void AGridManager::endSpread() {
 
 
 
-void AGridManager::SpreadFire() {
-	
-GetWorld()->GetTimerManager().SetTimer(spreadTimer, this, &AGridManager::TimerCallbackSpread, 1.0f, true);
-}
-
-
-
 void AGridManager::MakeFire(TArray<AGridCell*> gridcellarray2) {
-	int gc_arr_size = sizeof(gridcellarray2) / sizeof(gridcellarray2);
+
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("THis function has been called!"));
+
+
+
+	int gc_arr_size = gridcellarray2.Num();
+
+	FString SizeString = FString::FromInt(gc_arr_size);
+
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, SizeString);
 
 	UNiagaraComponent* NiagaraComponent = gridcellarray2[arrayindex]->GetNiagaraComponent();
 	if(NiagaraComponent){
 		NiagaraComponent->Activate();
 		NiagaraComponent->SetPaused(false);
 		}
-	arrayindex = arrayindex++;
+	arrayindex++;
 	if (arrayindex > gc_arr_size) {
 		endSpread();
 	}

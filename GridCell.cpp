@@ -30,11 +30,13 @@ AGridCell::AGridCell()
 
 		NiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NiagaraComponent"));
 		NiagaraComponent->SetupAttachment(RootComponent);
-		NiagaraComponent->Deactivate();
+		NiagaraComponent->bAutoActivate = false; // Disable auto-activation of the Niagara component
 		auto NiagaraSystemAssetPtr = LoadObject<UNiagaraSystem>(nullptr, TEXT("/Game/Fire.Fire"));
 		if (NiagaraSystemAssetPtr)
 		{
 			NiagaraComponent->SetAsset(NiagaraSystemAssetPtr);
+			NiagaraComponent->Deactivate(); // Deactivate the Niagara component initially
+
 
 		}
 

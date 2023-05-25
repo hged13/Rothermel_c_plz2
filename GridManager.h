@@ -40,6 +40,8 @@ public:
 	UPROPERTY(EditAnywhere)
 		TArray<AGridCell*> GridCellArray;
 
+
+
 	UPROPERTY(EditAnywhere)
 		int32 arrayindex;
 
