@@ -17,7 +17,6 @@ class ROTHERMEL_C_PLZ2_API AGridCell : public AActor
 
 public:
 
-	/** Please add a variable description */
 	UPROPERTY(EditAnywhere, Category = "Default")
 		TObjectPtr<UStaticMeshComponent> Sphere;
 
@@ -27,7 +26,6 @@ public:
 	UPROPERTY(EditAnywhere)
 		UStaticMesh* MyMesh;
 
-	/** Please add a variable description */
 	UPROPERTY(EditAnywhere, Category = "Default")
 		TObjectPtr<USceneComponent> DefaultSceneRoot;
 
