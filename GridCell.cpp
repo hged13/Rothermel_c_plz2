@@ -8,22 +8,21 @@ AGridCell::AGridCell()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
+	// load mesh from game engine
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Game/StarterContent/Shapes/Shape_Sphere"));
 
 
-	// Check if the material was loaded successfully
+	// Check if the mesh was loaded successfully
 	if (MeshAsset.Succeeded())
-	{
-		Sphere = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Sphere"));
-		Sphere = Sphere.Get();
-		if (Sphere != nullptr) {
+	{	// The shape was actually changed to a plane, not a shape, but 
+		Plane = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Plane"));
+		Plane = Plane.Get();
+		if (Plane != nullptr) {
 			MyMesh = MeshAsset.Object;
 
-
-			Sphere->SetStaticMesh(MyMesh);
-
-			// Assuming you have a UStaticMeshComponent named MeshComponent
-
+			Plane->SetStaticMesh(MyMesh);
+			
+			// Currently hardcoded values but will be updated to be dynamic (based on grid size in GridManager)
 			float WorldGridSize = 100.0f; // Total size of the world grid
 			int32 GridSize = 10; // Number of cells per row
 
@@ -31,12 +30,13 @@ AGridCell::AGridCell()
 
 			// Set the scale of the mesh component to match the grid cell size
 			FVector NewScale = FVector(GridCellSize, GridCellSize, GridCellSize);
-			Sphere->SetRelativeScale3D(NewScale);
+			Plane->SetRelativeScale3D(NewScale);
 		}
 
 		// Attach the static mesh component to the root component of the actor
-		RootComponent = Sphere;
-
+		RootComponent = Plane;
+		
+		// The fire capability is added to the GridCell through a niagara component
 		NiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NiagaraComponent"));
 		NiagaraComponent->SetupAttachment(RootComponent);
 		NiagaraComponent->bAutoActivate = false; // Disable auto-activation of the Niagara component
