@@ -7,6 +7,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "NiagaraComponent.h"
+#include "WorldCalculations.h"
 #include "GridCell.generated.h"
 
 
@@ -17,8 +18,11 @@ class ROTHERMEL_C_PLZ2_API AGridCell : public AActor
 
 public:
 
+
+
+	/** Please add a variable description */
 	UPROPERTY(EditAnywhere, Category = "Default")
-		TObjectPtr<UStaticMeshComponent> Sphere;
+		TObjectPtr<UStaticMeshComponent> Plane;
 
 	UPROPERTY(EditAnywhere, Category = "Materialr")
 		UMaterialInterface* MyMaterial;
@@ -26,6 +30,7 @@ public:
 	UPROPERTY(EditAnywhere)
 		UStaticMesh* MyMesh;
 
+	/** Please add a variable description */
 	UPROPERTY(EditAnywhere, Category = "Default")
 		TObjectPtr<USceneComponent> DefaultSceneRoot;
 
@@ -40,6 +45,7 @@ public:
 		UNiagaraComponent* GetNiagaraComponent() const { return NiagaraComponent; }
 
 
+	WorldCalculations* CalculationInstance;
 
 	// Sets default values for this actor's properties
 	AGridCell();
@@ -49,6 +55,8 @@ protected:
 
 
 public:
+
+	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 

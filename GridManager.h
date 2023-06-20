@@ -7,6 +7,7 @@
 #pragma once
 
 #include "Engine.h"
+#include "WorldCalculations.h"
 #include "GridCell.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
@@ -49,8 +50,14 @@ public:
 	UPROPERTY(EditAnywhere)
 		bool isSpreading;
 
+    float WorldGridSize;
+    float GridSize;
+
+	WorldCalculations* CalculationInstance;
+
+
 	UFUNCTION(BlueprintCallable, Category = "MyCategory")
-		void InitializeGrid(int32 GridSize, int32 WorldGridSize);
+		void InitializeGrid();
 
 	UFUNCTION(BlueprintCallable,Category = "MyCategory")
 		void MakeFire(TArray<AGridCell*> GridCellArray2);
@@ -68,9 +75,13 @@ public:
 
 protected:
 	FTimerHandle Timer;
-
+	float GridWidth;
+	int GridLength;
 	FTimerHandle spreadTimer;
+	UStaticMeshComponent* MeshComponent;
 	void endSpread();
+
+	void PerformLineTracing(AActor* Actor);
 
 
 };
