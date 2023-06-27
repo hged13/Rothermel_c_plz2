@@ -6,7 +6,7 @@
 WorldCalculations::WorldCalculations()
 {
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Game/StarterContent/Maps/mesh_out.mesh_out"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Game/StarterContent/Maps/mesh_out_2.mesh_out"));
 	if (MeshAsset.Succeeded())
 	{
 
@@ -34,7 +34,7 @@ WorldCalculations::WorldCalculations()
 		float GridHeight = MaxExtent.Z - MinExtent.Z;
 
 		//This value will eventually be dynamic somehow. (set by the user to change graph resolution)
-		GridSize = 10;
+		GridSize = 20;
 
 		WorldGridSize = finalgrid/GridSize;
 

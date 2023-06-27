@@ -10,7 +10,7 @@ AGridCell::AGridCell()
 	PrimaryActorTick.bCanEverTick = false;
 
 	// Get the material and the mesh for this actor from the game engine
-	static ConstructorHelpers::FObjectFinder<UMaterialInterface>MaterialAsset(TEXT( "/Game/StarterContent/Materials/M_Basic_Wall.M_Basic_Wall"));
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface>MaterialAsset(TEXT( "/Game/StarterContent/Materials/M_Glass.M_Glass"));
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Game/StarterContent/Shapes/Shape_Cube"));
 
 
@@ -49,30 +49,6 @@ AGridCell::AGridCell()
 		// Attach the static mesh component to the root component of the actor
 		RootComponent = Plane;
 
-
-		// Set up the niagara attachment. This is what allows the fire effect. 
-		NiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NiagaraComponent"));
-		NiagaraComponent->SetupAttachment(RootComponent);
-		NiagaraComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 5.0f)); // Adjust the Z-coordinate to position the Niagara component above the actor
-		NiagaraComponent->SetRelativeScale3D(FVector(0.01f, 0.01f, 0.01f)); // Adjust the Z-coordinate to position the Niagara component above the actor
-
-
-
-		NiagaraComponent->bAutoActivate = false; // Disable auto-activation of the Niagara component
-		auto NiagaraSystemAssetPtr = LoadObject<UNiagaraSystem>(nullptr, TEXT("/Game/Fire.Fire"));
-		if (NiagaraSystemAssetPtr)
-		{
-			NiagaraComponent->SetAsset(NiagaraSystemAssetPtr);
-			NiagaraComponent->Deactivate(); // Deactivate the Niagara component initially
-
-
-
-		}
-
-
-
-
-
 	}
 
 
@@ -85,4 +61,30 @@ void AGridCell::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
+
+
+
+/// Changed the way fire is set up in the system.. Saving this just in case. 
+
+		// Set up the niagara attachment. This is what allows the fire effect. 
+//NiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NiagaraComponent"));
+//NiagaraComponent->SetupAttachment(RootComponent);
+//NiagaraComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 5.0f)); // Adjust the Z-coordinate to position the Niagara component above the actor
+//NiagaraComponent->SetRelativeScale3D(FVector(0.01f, 0.01f, 0.01f)); // Adjust the Z-coordinate to position the Niagara component above the actor
+
+
+
+//NiagaraComponent->bAutoActivate = false; // Disable auto-activation of the Niagara component
+//auto NiagaraSystemAssetPtr = LoadObject<UNiagaraSystem>(nullptr, TEXT("/Game/Fire.Fire"));
+//if (NiagaraSystemAssetPtr)
+//{
+	//NiagaraComponent->SetAsset(NiagaraSystemAssetPtr);
+	//NiagaraComponent->Deactivate(); // Deactivate the Niagara component initially
+
+
+
+//}
+
+
+
 

@@ -38,20 +38,21 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
 	UPROPERTY(EditAnywhere)
 		TArray<AGridCell*> GridCellArray;
-
-
 
 	UPROPERTY(EditAnywhere)
 		int32 arrayindex;
 
 
-	UPROPERTY(EditAnywhere)
-		bool isSpreading;
+	bool isSpreading;
 
     float WorldGridSize;
+
     float GridSize;
+
+	float Delay;
 
 	WorldCalculations* CalculationInstance;
 
@@ -62,11 +63,9 @@ public:
 	UFUNCTION(BlueprintCallable,Category = "MyCategory")
 		void MakeFire(TArray<AGridCell*> GridCellArray2);
 
+	
 
 
-
-	UPROPERTY(EditAnywhere)
-		float Delay;
 
 
 
@@ -80,7 +79,7 @@ protected:
 	FTimerHandle spreadTimer;
 	UStaticMeshComponent* MeshComponent;
 	void endSpread();
-
+	UNiagaraSystem* NiagaraSystem;
 	void PerformLineTracing(AActor* Actor);
 
 

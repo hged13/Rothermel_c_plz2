@@ -1,5 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-
+// This is a class to keep track of world dimensions in order to spawn appropriately sized grid and cells
 #pragma once
 #include "Engine/World.h"
 #include <math.h>       
