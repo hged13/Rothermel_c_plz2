@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "GridManager.h"
 #include "TimerManager.h"
+#include "Misc/FileHelper.h"
+#include "Misc/Paths.h"
 #include "Engine/World.h"
 #include <math.h>
 #include "WorldCalculations.h"
@@ -18,10 +20,10 @@ AGridManager::AGridManager()
 	PrimaryActorTick.bCanEverTick = true;
 	//initialize arrayindex variable to be zero. To be used in MakeFire later.
 	arrayindex = 0;
-
 // Create a pointer to the mesh landscape so we can access it later
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Game/StarterContent/Maps/mesh_out.mesh_out"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Game/StarterContent/Levels/mesh_out.mesh_out")); 
 	if (MeshAsset.Succeeded())
+
 	{
 		UStaticMesh* StaticMesh = MeshAsset.Object;
 
@@ -30,6 +32,8 @@ AGridManager::AGridManager()
 
 		// Use the MeshComponent as needed
 	}
+
+
 	// Access the niagara system from the game engine and save as a var
 	ConstructorHelpers::FObjectFinder<UNiagaraSystem> NiagaraSystemAsset(TEXT("/Game/Fire.Fire"));
 	if (NiagaraSystemAsset.Succeeded())
@@ -39,7 +43,6 @@ AGridManager::AGridManager()
 }
 
 
-
 // Called when the game starts or when spawned
 void AGridManager::BeginPlay()
 {
@@ -47,13 +50,47 @@ void AGridManager::BeginPlay()
 	// Determine the world grid size based on the maximum of mesh width and mesh length
 	//  The number of rows/columns
 	GridSize = CalculationInstance->GridSize;
+	//FVector minextent = CalculationInstance->MinExtent;
+	//FVector maxextent = CalculationInstance->MaxExtent;
+	//FCartesianCoordinates MyECEFCoordsMin;
+	//FCartesianCoordinates MyGEOCoordsMin;
+	//FCartesianCoordinates MyECEFCoordsMax;
+	//FCartesianCoordinates MyGEOCoordsMax;
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Engine MIN: X=%f, Y=%f"), minextent.X, minextent.Y));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Engine MAX: X=%f, Y=%f"), maxextent.X, maxextent.Y));
+
+
 	// The distance between midpoints
 	WorldGridSize = CalculationInstance-> WorldGridSize;
 
 	InitializeGrid();
-	isSpreading = false;
-	
+	FString CSVFilePath = FPaths::ProjectDir() / TEXT("Source/Rothermel_c_plz2/data.csv");
+	//ParseData(CSVFilePath);
 
+	isSpreading = true;
+
+	TArray<AActor*> FoundActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGeoReferencingSystem::StaticClass(), FoundActors);
+
+	// Ensure that at least one instance was found
+	//if (FoundActors.Num() > 0)
+	//{
+		//MyGeoRefSystem = Cast<AGeoReferencingSystem>(FoundActors[0]);
+	  //  MyGeoRefSystem->EngineToECEF(minextent, MyECEFCoordsMin);
+		//MyGeoRefSystem->ECEFToProjected(MyECEFCoordsMin, MyGEOCoordsMin);
+		//MyGeoRefSystem->EngineToECEF(maxextent, MyECEFCoordsMax);
+		//MyGeoRefSystem->ECEFToProjected(MyECEFCoordsMax, MyGEOCoordsMax);
+
+		// Print to screen
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("GeographicCRS: " + GeographicCRS));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("MAX, Latitude: %f, Longitude: %f"), MyGEOCoordsMax.X, MyGEOCoordsMax.Y));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("MIN, Latitude: %f, Longitude: %f"), MyGEOCoordsMin.X, MyGEOCoordsMin.Y));
+
+
+	//}
+
+
+	
 
 
 
@@ -69,11 +106,11 @@ void AGridManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	// On the first tick, the fire spread is initiated. 
-	if (isSpreading == false) {
+	if (isSpreading == true) {
 		
 
 
-
+		
 		// Timer that calls TimerCallbackSpread every 0.5 seconds
 		// Eventually this float value will be updated incrementally with the output of the Rothermel equation
 		GetWorld()->GetTimerManager().SetTimer(spreadTimer, this, &AGridManager::TimerCallbackSpread, 0.5f, true);
@@ -83,7 +120,7 @@ void AGridManager::Tick(float DeltaTime)
 	}
 
 	//nothing will happen for other ticks  (other than the boolean if statement)
-	isSpreading = true;
+	isSpreading = false;
 	
 
 	
@@ -99,9 +136,10 @@ void AGridManager::InitializeGrid()
 
 	UWorld* World = GetWorld();
 	if (IsValid(World)) {
-		
 
-
+		//TEst to check if map can be accessed
+		// in the future we will set up data here to be used in future. 
+	
 		FBoxSphereBounds MeshBounds = MeshComponent->CalcBounds(MeshComponent->GetComponentTransform());
 
 		// We use the center of the mesh for reference to determine where the center of the grid will be 
@@ -140,7 +178,6 @@ void AGridManager::InitializeGrid()
 				AGridCell* NewActor = World->SpawnActor<AGridCell>(AGridCell::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
 
 				GridCellArray.Add(NewActor);
-				//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, "Grid Cell Created");
 
 
 
@@ -153,7 +190,72 @@ void AGridManager::InitializeGrid()
 	
 
 
+void AGridManager::ParseData(FString CSVFilePath) {
+		FuelMapRef = new FuelMap();
 
+
+		// Array to hold the lines of the CSV file
+		TArray<FString> CSVLines;
+
+		// Read the lines of the CSV file into the array
+		if (FFileHelper::LoadFileToStringArray(CSVLines, *CSVFilePath))
+		{
+			// Iterate over the lines of the CSV file
+			for (int32 i = 1; i < CSVLines.Num(); i++)
+			{
+				// Split the line into fields using the comma as a delimiter
+				TArray<FString> CSVFields;
+				CSVLines[i].ParseIntoArray(CSVFields, TEXT(","));
+				int fuelmodel = FCString::Atoi(*CSVFields[5]);
+			
+				FireData TempData;
+
+				if (fuelmodel == -9999) {
+					TempData.fuelload = 2.0;
+					TempData.fueldepth = 1.0;
+					TempData.fuel_moisture = 1.0;
+					TempData.fuel_sav = 3.0;
+					TempData.slope = FCString::Atof(*CSVFields[3]);
+					TempData.windspeed = 5.0;
+
+				}
+				else {
+					
+					
+
+					FoundModel = FuelMapRef->fuelModelTable.Find(fuelmodel);
+					// Create a new FireData instance
+
+					double load = static_cast<float>(FoundModel->fuel_load_1hr);
+					FString type = FoundModel->fuel_model_type;
+
+					TempData.fuelload = static_cast<float>(FoundModel->fuel_load_1hr);
+					TempData.fueldepth = static_cast<float>(FoundModel->fuel_bed_depth);
+					TempData.fuel_moisture = 1.0;
+					TempData.fuel_sav = static_cast<float>(FoundModel->sav_ratio_dead_1hr);
+					TempData.slope = FCString::Atof(*CSVFields[3]);
+					TempData.windspeed = 5.0;
+				}
+				// Set the properties of the FireData instance using the fields from the CSV line
+				// Note: You may need to convert the fields from FString to the appropriate type
+
+				// ... set the rest of TempData's properties ...
+
+				// Add TempData to FuelModelTable with appropriate key
+				FuelModelTable.Add(FVector2D(FCString::Atod(*CSVFields[0]), FCString::Atod(*CSVFields[1])), TempData);  // Assuming FVector2D's X and Y components are the ninth and tenth fields
+				
+
+				
+			}
+		}
+		else {
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Purple, "File Not Accessed.");
+
+
+		}
+
+
+}
 
 
 
@@ -178,6 +280,9 @@ void AGridManager::endSpread() {
 // Increments the variable arrayindex and turns the Niagara Component of the current grid cell on.
 
 void AGridManager::MakeFire(TArray<AGridCell*> gridcellarray2) {
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red,"Fire");
+
+
 
 
 
@@ -214,7 +319,9 @@ void AGridManager::MakeFire(TArray<AGridCell*> gridcellarray2) {
 
 			// Place the Niagara component at the hit location on the mesh
 			UNiagaraComponent* NiagaraComponen2 = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NiagaraSystem, HitLocation, FRotator::ZeroRotator);
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, "ACtivating");
+			
+			FVector NewScale = FVector(.001f, .001f, .001f);  // Use the scale you need
+			NiagaraComponen2->SetRelativeScale3D(NewScale);
 			NiagaraComponen2->Activate();
 
 			// Set additional properties or parameters for the Niagara component if needed
